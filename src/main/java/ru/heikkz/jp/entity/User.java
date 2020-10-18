@@ -28,9 +28,9 @@ public class User {
     /**
      * Логин пользователя
      */
-    @Size(min = 3, message = "Name must be at least 3 characters!")
-    @Column(nullable = false)
-    private String name;
+//    @Size(min = 3, message = "Name must be at least 3 characters!")
+//    @Column(nullable = false)
+//    private String name;
     /**
      * Почтовый адрес
      */
@@ -60,12 +60,10 @@ public class User {
     @Column(nullable = false)
     private boolean enabled;
 
-    @ManyToMany
-    @JoinTable(name="user_roles")
-    private List<Role> roles;
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Task> tasks;
-
-    private boolean admin;
 }
