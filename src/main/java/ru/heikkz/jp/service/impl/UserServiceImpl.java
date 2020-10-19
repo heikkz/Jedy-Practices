@@ -11,10 +11,13 @@ import ru.heikkz.jp.entity.User;
 import ru.heikkz.jp.entity.auth.VerificationToken;
 import ru.heikkz.jp.exception.CoreException;
 import ru.heikkz.jp.exception.MyBadRequestException;
+import ru.heikkz.jp.model.NotificationEmail;
 import ru.heikkz.jp.repository.UserRepository;
 import ru.heikkz.jp.repository.VerificationTokenRepository;
 import ru.heikkz.jp.rest.model.LoginRequest;
+import ru.heikkz.jp.service.MailService;
 import ru.heikkz.jp.service.UserService;
+import ru.heikkz.jp.util.EnvironmentProperties;
 
 import java.time.Instant;
 import java.util.List;
@@ -27,12 +30,17 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final MailService mailService;
+    private final EnvironmentProperties environmentProperties;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, VerificationTokenRepository verificationTokenRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                           VerificationTokenRepository verificationTokenRepository, MailService mailService, EnvironmentProperties environmentProperties) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.verificationTokenRepository = verificationTokenRepository;
+        this.mailService = mailService;
+        this.environmentProperties = environmentProperties;
     }
 
     @Override
@@ -55,9 +63,9 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(false);
 
         User createdUser = userRepository.save(user);
-        // TODO отправка письма
-//        String token = generateVerificationToken(user);
-
+        String token = generateVerificationToken(user);
+        String confirmPath = environmentProperties.getAccountVerificationUrl() + "/" + token;
+        mailService.sendMail(new NotificationEmail("Пожалуйста активируйте свой аккаунт", user.getEmail(), confirmPath));
         return createdUser;
     }
 
@@ -86,9 +94,15 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Transactional
     @Override
-    public boolean verifyEmailToken(String token) {
-        throw new CoreException("Unsupported operation");
+    public void verifyEmailToken(String reqToken) {
+        VerificationToken token = verificationTokenRepository.findByToken(reqToken)
+                .orElseThrow(() -> new CoreException("Невалидный токен подтверждения регистрации"));
+        User user = userRepository.findByEmail(token.getUser().getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 
     @Override

@@ -18,7 +18,11 @@ public interface UserService {
 
     void delete(Long id);
 
-    boolean verifyEmailToken(String token);
+    /**
+     * Верифицировать пользователя, после регистрации, по токену
+     * @param token токен верификации
+     */
+    void verifyEmailToken(String token);
 
     boolean requestResetPassword(String email);
 

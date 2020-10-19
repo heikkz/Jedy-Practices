@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<!-- TODO сделать шаблон письма -->
+<div><a href="http://localhost:8080" target="_blank"><img
+        src="http://www.localhost:8080.ru/images/logo.png"
+        alt="localhost:8080" class="CToWUd" width="120" height="50"></a></div>
+<p>Здравствуйте!</p>
+<p>Вы получили это письмо, потому что недавно решили зарегистрироваться на&nbsp;сайте <a href="http://localhost:8080"
+                                                                                         style="color:#404040"
+                                                                                         target="_blank"><span
+        class="il">localhost</span></a> c&nbsp;email адресом: <b><a th:href="@{mailto:{id}(id=${emailTo})}" target="_blank"><span th:text="${emailTo}"></span></a></b>
+</p>
+<table cellspacing="0" cellpadding="10" border="0">
+    <tbody>
+    <tr>
+        <td style="padding-left:15px;padding-right:15px;background-color:#3366cc">
+            <a th:href="@{${confirmUrl}}"
+               style="color:#fff;font-weight:bold;text-decoration:none" target="_blank">Нажмите сюда для продолжения регистрации</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<p>Если это какая-то ужасная ошибка — просто проигнорируйте это письмо.</p>
+<p>С уважением,<br>
+    Команда <a href="http://localhost:8080" style="color:#404040" target="_blank"><span
+            class="il">localhost</span></a></p>
+</body>
+</html>

@@ -3,19 +3,18 @@ package ru.heikkz.jp.rest.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.heikkz.jp.rest.model.LoginRequest;
 import ru.heikkz.jp.service.UserService;
 
 import javax.validation.Valid;
 
+// TODO контракт REST-ответов
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthRestController {
 
+    /* Сервис для работы с пользователями */
     private final UserService userService;
 
     @Autowired
@@ -23,9 +22,25 @@ public class AuthRestController {
         this.userService = userService;
     }
 
+    /**
+     * Регистрация пользователя в системе
+     * @param request информация о пользователе
+     * @return OK
+     */
     @PostMapping("/signup")
     public ResponseEntity<Void> signup(@RequestBody @Valid LoginRequest request) {
         userService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * Подтверждение регистрации пользователя
+     * @param token токен верификации регистрации
+     * @return OK
+     */
+    @GetMapping("/signup/confirm/{token}")
+    public ResponseEntity<String> confirmSignup(@PathVariable String token) {
+        userService.verifyEmailToken(token);
+        return new ResponseEntity<>("Account Activated Successfully", HttpStatus.OK);
     }
 }
