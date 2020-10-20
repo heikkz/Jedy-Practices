@@ -2,6 +2,10 @@ package ru.heikkz.jp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +18,9 @@ import ru.heikkz.jp.exception.MyBadRequestException;
 import ru.heikkz.jp.model.NotificationEmail;
 import ru.heikkz.jp.repository.UserRepository;
 import ru.heikkz.jp.repository.VerificationTokenRepository;
+import ru.heikkz.jp.rest.model.AuthenticationResponse;
 import ru.heikkz.jp.rest.model.LoginRequest;
+import ru.heikkz.jp.security.jwt.JwtProvider;
 import ru.heikkz.jp.service.MailService;
 import ru.heikkz.jp.service.UserService;
 import ru.heikkz.jp.util.EnvironmentProperties;
@@ -29,15 +35,20 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
     private final EnvironmentProperties environmentProperties;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                           VerificationTokenRepository verificationTokenRepository, MailService mailService, EnvironmentProperties environmentProperties) {
+                           AuthenticationManager authenticationManager, JwtProvider jwtProvider, VerificationTokenRepository verificationTokenRepository,
+                           MailService mailService, EnvironmentProperties environmentProperties) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtProvider = jwtProvider;
         this.verificationTokenRepository = verificationTokenRepository;
         this.mailService = mailService;
         this.environmentProperties = environmentProperties;
@@ -123,6 +134,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> findAll(int page, int count) {
         return null;
+    }
+
+    @Override
+    public AuthenticationResponse login(LoginRequest request) {
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        String jwtToken = jwtProvider.generateToken(auth);
+        return new AuthenticationResponse(jwtToken, request.getEmail());
     }
 
     /**

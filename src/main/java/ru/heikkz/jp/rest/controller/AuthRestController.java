@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.heikkz.jp.rest.model.AuthenticationResponse;
 import ru.heikkz.jp.rest.model.LoginRequest;
 import ru.heikkz.jp.service.UserService;
 
@@ -42,5 +43,10 @@ public class AuthRestController {
     public ResponseEntity<String> confirmSignup(@PathVariable String token) {
         userService.verifyEmailToken(token);
         return new ResponseEntity<>("Account Activated Successfully", HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest request) {
+        return userService.login(request);
     }
 }

@@ -20,11 +20,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AuthRestController.class)
+//@WebMvcTest(AuthRestController.class)
 class AuthRestControllerTest extends AbstractRestControllerTest {
-
-    @Autowired
-    private MockMvc mvc;
 
     @MockBean
     private UserService userService;

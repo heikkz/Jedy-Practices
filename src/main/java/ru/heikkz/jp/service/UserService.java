@@ -2,6 +2,7 @@ package ru.heikkz.jp.service;
 
 import org.springframework.data.domain.Page;
 import ru.heikkz.jp.entity.User;
+import ru.heikkz.jp.rest.model.AuthenticationResponse;
 import ru.heikkz.jp.rest.model.LoginRequest;
 
 import java.util.List;
@@ -31,4 +32,6 @@ public interface UserService {
     List<User> findAll();
 
     Page<User> findAll(int page, int count);
+
+    AuthenticationResponse login(LoginRequest request);
 }

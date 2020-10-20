@@ -6,5 +6,7 @@ import lombok.experimental.UtilityClass;
 public class SecurityConstants {
 
     public static final String AUTH_URLS = "/api/v1/auth/**";
+    public static final String USER_URLS = "/api/v1/user/**";
+    public static final String ADMIN_URLS = "/api/v1/admin/**";
 
 }
