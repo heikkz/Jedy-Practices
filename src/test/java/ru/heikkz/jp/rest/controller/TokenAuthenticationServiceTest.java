@@ -1,15 +1,20 @@
 package ru.heikkz.jp.rest.controller;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.heikkz.jp.service.AuthService;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@AutoConfigureMockMvc
 //@WebMvcTest(UserController.class)
 public class TokenAuthenticationServiceTest extends AbstractRestControllerTest {
+
+    @MockBean
+    private AuthService authService;
 
     @Test
     @WithAnonymousUser

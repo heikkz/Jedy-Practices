@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
-import ru.heikkz.jp.rest.model.LoginRequest;
+import ru.heikkz.jp.dto.LoginRequest;
 import ru.heikkz.jp.service.MailService;
 
 import java.io.UnsupportedEncodingException;

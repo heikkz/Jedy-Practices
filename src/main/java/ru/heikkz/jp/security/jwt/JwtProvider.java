@@ -37,6 +37,15 @@ public class JwtProvider {
                 .compact();
     }
 
+    public String generateTokenWithUserName(String userName) {
+        return Jwts.builder()
+                .setSubject(userName)
+                .setIssuedAt(Date.from(Instant.now()))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+                .compact();
+    }
+
     /**
      * Валидация токена
      * @param jwt токен

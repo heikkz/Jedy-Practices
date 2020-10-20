@@ -1,4 +1,4 @@
-package ru.heikkz.jp.rest.model;
+package ru.heikkz.jp.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

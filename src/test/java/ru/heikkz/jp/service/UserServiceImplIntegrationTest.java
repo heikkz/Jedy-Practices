@@ -1,6 +1,5 @@
 package ru.heikkz.jp.service;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,9 +9,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.heikkz.jp.entity.Role;
 import ru.heikkz.jp.entity.User;
+import ru.heikkz.jp.entity.auth.VerificationToken;
 import ru.heikkz.jp.exception.MyBadRequestException;
 import ru.heikkz.jp.repository.UserRepository;
-import ru.heikkz.jp.rest.model.LoginRequest;
+import ru.heikkz.jp.repository.VerificationTokenRepository;
+import ru.heikkz.jp.dto.LoginRequest;
+import ru.heikkz.jp.service.impl.AuthServiceImpl;
 import ru.heikkz.jp.service.impl.UserServiceImpl;
 
 import java.time.LocalDate;
@@ -31,10 +33,16 @@ import static org.mockito.Mockito.*;
 class UserServiceImplIntegrationTest {
 
     @InjectMocks
-    private UserServiceImpl service;
+    private AuthServiceImpl authService;
+    @InjectMocks
+    private UserServiceImpl userService;
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private VerificationTokenRepository verificationTokenRepository;
+    @Mock
+    private MailService mailService;
 
     @Mock
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -48,7 +56,7 @@ class UserServiceImplIntegrationTest {
     public void whenCreateUser_ifEmailExists() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(getTestUser()));
         assertThrows(MyBadRequestException.class, () -> {
-            service.create(new LoginRequest("testuser@mail.ru", "1"));
+            authService.register(new LoginRequest("testuser@mail.ru", "1"));
         });
         verify(userRepository, never()).save(any(User.class));
     }
@@ -62,8 +70,9 @@ class UserServiceImplIntegrationTest {
         given(userRepository.findByEmail(request.getEmail())).willReturn(Optional.empty());
         given(userRepository.save(any(User.class))).willAnswer(invocation -> invocation.getArgument(0));
         given(bCryptPasswordEncoder.encode(anyString())).willReturn(encryptedPassword);
+        given(verificationTokenRepository.save(any(VerificationToken.class))).willReturn(any(VerificationToken.class));
 
-        User savedUser = service.create(request);
+        User savedUser = authService.register(request);
         assertThat(savedUser).isNotNull();
         verify(userRepository).save(any(User.class));
     }
@@ -78,7 +87,7 @@ class UserServiceImplIntegrationTest {
         given(userRepository.findByEmail(requestUser.getEmail())).willReturn(Optional.of(dbUser));
         given(userRepository.save(requestUser)).willAnswer(invocation -> invocation.getArgument(0));
 
-        User updated = service.update(requestUser);
+        User updated = userService.update(requestUser);
         assertEquals(requestUser.getEmail(), updated.getEmail());
         assertEquals(requestUser.getPassword(), updated.getPassword());
         verify(userRepository).save(any(User.class));
@@ -92,7 +101,7 @@ class UserServiceImplIntegrationTest {
         User requestUser = getTestUser();
         given(userRepository.findByEmail(requestUser.getEmail())).willReturn(Optional.empty());
         assertThrows(UsernameNotFoundException.class, () -> {
-            service.update(requestUser);
+            userService.update(requestUser);
         });
         verify(userRepository, never()).save(any(User.class));
     }
@@ -100,8 +109,8 @@ class UserServiceImplIntegrationTest {
 
     public void shouldDelete() {
         long userId = 1L;
-        service.delete(userId);
-        service.delete(userId);
+        userService.delete(userId);
+        userService.delete(userId);
 
         verify(userRepository, times(2)).deleteById(userId);
     }

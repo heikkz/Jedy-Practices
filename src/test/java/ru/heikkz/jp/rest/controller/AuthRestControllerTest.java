@@ -2,15 +2,12 @@ package ru.heikkz.jp.rest.controller;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.heikkz.jp.exception.MyBadRequestException;
-import ru.heikkz.jp.rest.model.LoginRequest;
-import ru.heikkz.jp.service.UserService;
+import ru.heikkz.jp.dto.LoginRequest;
+import ru.heikkz.jp.service.AuthService;
 
 import java.nio.charset.StandardCharsets;
 
@@ -24,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthRestControllerTest extends AbstractRestControllerTest {
 
     @MockBean
-    private UserService userService;
+    private AuthService authService;
 
     private static final String URL = "/api/v1/auth";
     private static final String SIGNUP = URL + "/signup";
@@ -85,7 +82,7 @@ class AuthRestControllerTest extends AbstractRestControllerTest {
      */
     @Test
     public void whenUserExists_thenReturns400AndErrorResult() throws Exception {
-        when(userService.create(ArgumentMatchers.any(LoginRequest.class)))
+        when(authService.register(ArgumentMatchers.any(LoginRequest.class)))
                 .thenThrow(new MyBadRequestException("Выберите другой email"));
 
         MvcResult mvcResult = mvc.perform(post(SIGNUP).contentType(MediaType.APPLICATION_JSON)
