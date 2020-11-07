@@ -1,11 +1,12 @@
 package ru.heikkz.jp.entity.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.heikkz.jp.entity.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -32,12 +33,10 @@ public class Task {
     private Type type;
 
     @ElementCollection
-    @CollectionTable(name = "task_dates_mapping",
-            joinColumns = {@JoinColumn(name = "task_id", referencedColumnName = "id")})
-    @MapKeyColumn(name = "task_date")
-    @Column(name = "complete")
-    private Map<LocalDate, Boolean> dateToCompleteMap;
+    @CollectionTable(name="tack_checks", joinColumns=@JoinColumn(name = "task_id", referencedColumnName = "id"))
+    private List<Check> checks = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

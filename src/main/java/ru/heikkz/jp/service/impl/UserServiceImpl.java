@@ -1,10 +1,12 @@
 package ru.heikkz.jp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.heikkz.jp.entity.User;
+import ru.heikkz.jp.entity.task.Task;
 import ru.heikkz.jp.exception.MyBadRequestException;
 import ru.heikkz.jp.repository.UserRepository;
 import ru.heikkz.jp.service.UserService;
@@ -23,6 +25,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getCurrentUser() {
+        org.springframework.security.core.userdetails.User principal =
+                (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByEmail(principal.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + principal.getUsername()));
+    }
+
+    @Override
     public User update(User user) {
         Optional<User> optional = userRepository.findByEmail(user.getEmail());
         if (!optional.isPresent()) {
@@ -38,22 +47,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
-        return null;
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
     @Override
     public void delete(Long id) {
 
-    }
-
-    @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public Page<User> findAll(int page, int count) {
-        return null;
     }
 }

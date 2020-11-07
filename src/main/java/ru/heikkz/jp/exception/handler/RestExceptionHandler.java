@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.validation.BindingResult;
@@ -49,7 +50,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, dto, headers, HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler(value = {ConstraintViolationException.class, DataIntegrityViolationException.class, MyBadRequestException.class, UsernameNotFoundException.class})
+    @ExceptionHandler(value = {ConstraintViolationException.class, DataIntegrityViolationException.class, MyBadRequestException.class, UsernameNotFoundException.class,
+            BadCredentialsException.class})
     protected ResponseEntity<Object> handleBadRequest(RuntimeException ex, WebRequest request) {
         logger.info("Bad Request: " + ex.getMessage());
         logger.debug("Bad Request: ", ex);
