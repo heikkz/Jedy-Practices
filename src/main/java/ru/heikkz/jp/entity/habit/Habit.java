@@ -1,4 +1,4 @@
-package ru.heikkz.jp.entity.task;
+package ru.heikkz.jp.entity.habit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -13,8 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
-@Table(name = "tasks")
-public class Task {
+@Table(name = "habits")
+public class Habit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class Task {
     private Type type;
 
     @ElementCollection
-    @CollectionTable(name="tack_checks", joinColumns=@JoinColumn(name = "task_id", referencedColumnName = "id"))
+    @CollectionTable(name="habit_checks", joinColumns=@JoinColumn(name = "habit_id", referencedColumnName = "id"))
     private List<Check> checks = new ArrayList<>();
 
     @JsonIgnore

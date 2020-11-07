@@ -6,14 +6,14 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 
 /**
- * DTO для задачи
+ * DTO для привычки
  */
 @Getter
 @Setter
-public class TaskDto {
+public class HabitDto {
 
     /**
-     * ID таски
+     * ID привычки
      */
     private Long id;
     /**

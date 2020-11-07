@@ -3,7 +3,7 @@ package ru.heikkz.jp.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import ru.heikkz.jp.entity.task.Task;
+import ru.heikkz.jp.entity.habit.Habit;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -65,5 +65,5 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Task> tasks;
+    private List<Habit> habits;
 }

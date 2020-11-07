@@ -1,4 +1,4 @@
-package ru.heikkz.jp.entity.task;
+package ru.heikkz.jp.entity.habit;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

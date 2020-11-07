@@ -4,14 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.heikkz.jp.entity.User;
-import ru.heikkz.jp.entity.task.Task;
 import ru.heikkz.jp.exception.MyBadRequestException;
 import ru.heikkz.jp.repository.UserRepository;
 import ru.heikkz.jp.service.UserService;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

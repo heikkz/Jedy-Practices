@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(SecurityConstants.AUTH_URLS, "/h2-console/*").permitAll()
                 .antMatchers(SecurityConstants.ADMIN_URLS).hasRole("ADMIN")
-                .antMatchers(SecurityConstants.USER_URLS, SecurityConstants.TASK_URLS).hasRole("USER")
+                .antMatchers(SecurityConstants.USER_URLS, SecurityConstants.HABIT_URLS).hasRole("USER")
                 .anyRequest().authenticated();
         http.headers().cacheControl().and().frameOptions().disable();
         http.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class);

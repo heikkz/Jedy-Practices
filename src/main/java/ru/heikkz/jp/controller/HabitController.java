@@ -3,25 +3,25 @@ package ru.heikkz.jp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.heikkz.jp.dto.TaskDto;
-import ru.heikkz.jp.entity.task.Task;
-import ru.heikkz.jp.service.TaskService;
+import ru.heikkz.jp.dto.HabitDto;
+import ru.heikkz.jp.entity.habit.Habit;
+import ru.heikkz.jp.service.HabitService;
 
 import javax.validation.Valid;
 import java.util.List;
 
 /**
- * REST контроллер для работы с задачами
+ * REST контроллер для работы с привычками
  */
 @RestController
-@RequestMapping("/api/v1/tasks")
-public class TaskController {
+@RequestMapping("/api/v1/habits")
+public class HabitController {
 
-    private final TaskService taskService;
+    private final HabitService habitService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
+    public HabitController(HabitService habitService) {
+        this.habitService = habitService;
     }
 
     /**
@@ -31,13 +31,13 @@ public class TaskController {
      */
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('USER')")
-    public Task createTask(@RequestBody @Valid TaskDto dto) {
-        return taskService.create(dto);
+    public Habit createHabit(@RequestBody @Valid HabitDto dto) {
+        return habitService.create(dto);
     }
 
     @PostMapping("/update")
-    public Task updateTask(@RequestBody @Valid TaskDto dto) {
-        return taskService.update(dto);
+    public Habit updateHabit(@RequestBody @Valid HabitDto dto) {
+        return habitService.update(dto);
     }
 
     /**
@@ -47,7 +47,7 @@ public class TaskController {
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('USER')")
-    public List<Task> getAllUserTasks() {
-        return taskService.findAllUserTasks();
+    public List<Habit> getAllUserHabits() {
+        return habitService.findAllUserHabit();
     }
 }
